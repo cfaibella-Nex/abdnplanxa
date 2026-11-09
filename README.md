@@ -7,10 +7,13 @@ index.html          pàgina única amb rutes #: inici, serveis, treballs, contac
                     (les ressenyes són una secció de l'inici: #inici--ressenyes; l'antic #ressenyes hi redirigeix)
 css/styles.css      estils (tokens + components ab- + composició)
 js/main.js          idioma CA/ES, menú, rutes, formulari Web3Forms, mapa amb consentiment, carrusel de ressenyes
-img/                fotografies
+img/                fotografies en WebP (foto-*.webp) i og-abdn.jpg (previsualització en compartir)
 favicon.ico/.svg    favicon «ABdn»; apple-touch-icon.png, icon-192/512.png i site.webmanifest per a mòbils
 CNAME               domini personalitzat
 ```
 
 Formulari: substituir `WEB3FORMS_ACCESS_KEY` a `index.html` per la clau de Web3Forms (correu info@abdnplanxaipintura.com).
 Ressenyes: el recompte (101) és a `index.html` i a `js/main.js` (`rev.basedOn`, `rating.count`); actualitza'l quan canviï.
+
+WhatsApp: botó flotant (`.ab-wa`) cap al 658 06 42 14; el text prefixat és a `js/main.js` (`wa.href`).
+SEO: etiquetes Open Graph i fitxa schema.org `AutoBodyShop` al `<head>` de `index.html`; si canvia l'horari o el telèfon, actualitza-la també.
