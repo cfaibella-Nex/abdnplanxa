@@ -34,10 +34,8 @@
   "footer.legal": "Avís legal",
   "footer.privacy": "Privacitat",
   "footer.cookies": "Cookies",
-  "rating.caption": "Valoració pública de clients",
   "rating.count": "101 ressenyes a Google",
   "review.source": "Ressenya de Google",
-  "review.full": "Llegeix-la sencera",
   "meta.index.title": "A BDN Planxa i Pintura · Taller de xapa i pintura a Badalona",
   "meta.index.desc": "Taller de xapa, pintura i carrosseria al Carrer del Rector, 54, de Badalona. Gestionem el sinistre amb la teva asseguradora. Valoració de 5,0 a Google.",
   "hero.sub": "Taller de xapa i pintura a Badalona",
@@ -67,7 +65,6 @@
   "img.11": "Aleta i para-xocs reparats i pintats",
   "rev.title": "El que diuen els clients",
   "rev.sub": "Ressenyes reals de Google, tal com les han escrit",
-  "rev.all": "Totes les ressenyes",
   "eco.title": "Cobertura integral del vehicle",
   "eco.sub": "Integrats al Grupo Marti Motors",
   "eco.lead": "La integració al Grupo Marti Motors ens permet oferir una gestió completa del vehicle: mecànica, diagnosi, manteniment, xapa, pintura, peritatge i sinistres des d’un mateix lloc. Estàndards de qualitat de gran grup, amb un tracte proper i flexible.",
@@ -139,19 +136,6 @@
   "img.07": "Prestatgeria amb les bases de pintura del taller",
   "g.08": "Preparació de color",
   "img.08": "Detall dels pots de pintura",
-  "meta.ressenyes.title": "Ressenyes de clients · 5,0 a Google · A BDN Planxa i Pintura",
-  "meta.ressenyes.desc": "Què en diuen els clients: 5,0 de 5 a Google. Ressenyes reals sobre la qualitat de la reparació, la rapidesa i el tracte.",
-  "rev.page.title": "Ressenyes",
-  "rev.page.sub": "El que diuen els clients a Google",
-  "rev.valued": "Aspectes més valorats pels clients",
-  "rev.v1": "Qualitat de la reparació",
-  "rev.v2": "Rapidesa i eficiència",
-  "rev.v3": "Professionalitat",
-  "rev.v4": "Tracte proper",
-  "rev.v5": "Transparència i confiança",
-  "value.1": "Confiança",
-  "value.2": "Qualitat",
-  "value.3": "Rapidesa",
   "rev.google": "Veure-les totes a Google",
   "rev.note": "Ressenyes publicades a Google i reproduïdes literalment, en l’idioma original. Valoració consultada el 4 d’octubre de 2026.",
   "meta.contacte.title": "Contacte i pressupost · A BDN Planxa i Pintura (Badalona)",
@@ -205,7 +189,14 @@
   "meta.404.desc": "Aquesta pàgina no existeix.",
   "nf.title": "Aquesta pàgina no existeix",
   "nf.text": "Potser l’enllaç és antic. Pots tornar a l’inici o anar directament al formulari de pressupost.",
-  "nf.home": "Torna a l’inici"
+  "nf.home": "Torna a l’inici",
+  "rev.excellent": "Excel·lent",
+  "rev.basedOn": "Basada en <strong>101</strong> ressenyes de Google",
+  "rev.more": "Llegir més",
+  "rev.less": "Llegir menys",
+  "rev.prev": "Ressenyes anteriors",
+  "rev.next": "Ressenyes següents",
+  "rev.region": "Ressenyes de clients a Google"
  },
  "es": {
   "ui.skip": "Saltar al contenido",
@@ -232,10 +223,8 @@
   "footer.legal": "Aviso legal",
   "footer.privacy": "Privacidad",
   "footer.cookies": "Cookies",
-  "rating.caption": "Valoración pública de clientes",
   "rating.count": "101 reseñas en Google",
   "review.source": "Reseña de Google",
-  "review.full": "Leerla entera",
   "meta.index.title": "A BDN Planxa i Pintura · Taller de chapa y pintura en Badalona",
   "meta.index.desc": "Taller de chapa, pintura y carrocería en la calle Rector, 54, de Badalona. Gestionamos el siniestro con tu aseguradora. Valoración de 5,0 en Google.",
   "hero.sub": "Taller de chapa y pintura en Badalona",
@@ -265,7 +254,6 @@
   "img.11": "Aleta y paragolpes reparados y pintados",
   "rev.title": "Lo que dicen los clientes",
   "rev.sub": "Reseñas reales de Google, tal como las han escrito",
-  "rev.all": "Todas las opiniones",
   "eco.title": "Cobertura integral del vehículo",
   "eco.sub": "Integrados en el Grupo Marti Motors",
   "eco.lead": "La integración en el Grupo Marti Motors nos permite ofrecer una gestión completa del vehículo: mecánica, diagnosis, mantenimiento, chapa, pintura, peritación y siniestros desde un mismo lugar. Estándares de calidad de gran grupo, con un trato cercano y flexible.",
@@ -337,19 +325,6 @@
   "img.07": "Estantería con las bases de pintura del taller",
   "g.08": "Preparación de color",
   "img.08": "Detalle de los botes de pintura",
-  "meta.ressenyes.title": "Opiniones de clientes · 5,0 en Google · A BDN Planxa i Pintura",
-  "meta.ressenyes.desc": "Qué dicen los clientes: 5,0 de 5 en Google. Opiniones reales sobre la calidad de la reparación, la rapidez y el trato.",
-  "rev.page.title": "Opiniones",
-  "rev.page.sub": "Lo que dicen los clientes en Google",
-  "rev.valued": "Aspectos más valorados por los clientes",
-  "rev.v1": "Calidad de reparación",
-  "rev.v2": "Rapidez y eficiencia",
-  "rev.v3": "Profesionalidad",
-  "rev.v4": "Trato cercano",
-  "rev.v5": "Transparencia y confianza",
-  "value.1": "Confianza",
-  "value.2": "Calidad",
-  "value.3": "Rapidez",
   "rev.google": "Verlas todas en Google",
   "rev.note": "Reseñas publicadas en Google y reproducidas literalmente, en su idioma original. Valoración consultada el 4 de octubre de 2026.",
   "meta.contacte.title": "Contacto y presupuesto · A BDN Planxa i Pintura (Badalona)",
@@ -403,7 +378,14 @@
   "meta.404.desc": "Esta página no existe.",
   "nf.title": "Esta página no existe",
   "nf.text": "Quizá el enlace es antiguo. Puedes volver al inicio o ir directamente al formulario de presupuesto.",
-  "nf.home": "Volver al inicio"
+  "nf.home": "Volver al inicio",
+  "rev.excellent": "Excelente",
+  "rev.basedOn": "Basada en <strong>101</strong> reseñas de Google",
+  "rev.more": "Leer más",
+  "rev.less": "Leer menos",
+  "rev.prev": "Reseñas anteriores",
+  "rev.next": "Reseñas siguientes",
+  "rev.region": "Reseñas de clientes en Google"
  }
 };
 
@@ -596,9 +578,62 @@
     });
   }
 
-  var ROUTES = { 'inici': 'index', 'serveis': 'serveis', 'treballs': 'treballs', 'ressenyes': 'ressenyes', 'contacte': 'contacte', 'avis-legal': 'avis', 'privacitat': 'privacitat', 'cookies': 'cookies' };
+  /* ---------- Ressenyes: carrusel i «Llegir més» ---------- */
+  function initReviews() {
+    qsa('[data-reviews]').forEach(function (root) {
+      var track = root.querySelector('.rw__track');
+      var prev = root.querySelector('[data-rw="prev"]');
+      var next = root.querySelector('[data-rw="next"]');
+      if (!track) { return; }
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      function step() {
+        var item = track.querySelector('.rw__item');
+        var gap = parseFloat(window.getComputedStyle(track).columnGap) || 0;
+        return item ? item.getBoundingClientRect().width + gap : track.clientWidth;
+      }
+      function go(dir) { track.scrollBy({ left: dir * step(), behavior: reduce ? 'auto' : 'smooth' }); }
+      function update() {
+        var max = track.scrollWidth - track.clientWidth - 6;
+        if (prev) { prev.disabled = track.scrollLeft <= 6; }
+        if (next) { next.disabled = track.scrollLeft >= max; }
+      }
+      function measure() {
+        qsa('.rw-card', root).forEach(function (card) {
+          var text = card.querySelector('.rw-card__text');
+          var btn = card.querySelector('.rw-card__more');
+          if (!text || !btn || card.classList.contains('is-open')) { return; }
+          btn.hidden = text.scrollHeight <= text.clientHeight + 2;
+        });
+        update();
+      }
+      if (prev) { prev.addEventListener('click', function () { go(-1); }); }
+      if (next) { next.addEventListener('click', function () { go(1); }); }
+      track.addEventListener('scroll', function () { window.requestAnimationFrame(update); }, { passive: true });
+      track.addEventListener('keydown', function (e) {
+        if (e.target !== track) { return; }
+        if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+      });
+      qsa('.rw-card__more', root).forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var card = btn.closest('.rw-card');
+          var open = !card.classList.contains('is-open');
+          card.classList.toggle('is-open', open);
+          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+          var label = btn.querySelector('[data-i18n]');
+          if (label) { label.setAttribute('data-i18n', open ? 'rev.less' : 'rev.more'); label.textContent = t(open ? 'rev.less' : 'rev.more'); }
+        });
+      });
+      measure();
+      window.addEventListener('resize', measure);
+      window.addEventListener('hashchange', function () { window.setTimeout(measure, 0); });
+    });
+  }
+
+  var ROUTES = { 'inici': 'index', 'serveis': 'serveis', 'treballs': 'treballs', 'contacte': 'contacte', 'avis-legal': 'avis', 'privacitat': 'privacitat', 'cookies': 'cookies' };
   function route() {
     var h = decodeURIComponent((window.location.hash || '').slice(1));
+    if (h === 'ressenyes') { h = 'inici--ressenyes'; } /* les ressenyes ara són una secció de l'inici */
     var parts = h.split('--'), r = parts[0], anchor = parts[1];
     if (!ROUTES[r]) {
       if (h && document.getElementById(h)) { return; }
@@ -622,6 +657,11 @@
     initYear();
     initForm();
     initMap();
+    initReviews();
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest ? e.target.closest('a[href^="#"]') : null;
+      if (a && a.getAttribute('href') === window.location.hash) { e.preventDefault(); route(); }
+    });
   }
   if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', start); } else { start(); }
 })();
