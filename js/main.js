@@ -19,6 +19,19 @@
   "ui.quote": "Demana pressupost",
   "ui.stars5": "5,0 de 5 estrelles",
   "nav.inici": "Inici",
+  "ba.title": "Abans i després",
+  "ba.sub": "Llisca per veure més reparacions",
+  "ba.prev": "Reparació anterior",
+  "ba.next": "Reparació següent",
+  "ba.region": "Reparacions abans i després",
+  "ba.before": "Abans",
+  "ba.after": "Després",
+  "ba.1.title": "Aleta posterior",
+  "ba.1.a": "Aleta posterior d’un cotxe vermell enfonsada, abans de la reparació",
+  "ba.1.b": "El mateix cotxe vermell amb l’aleta reparada i pintada",
+  "ba.2.title": "Aleta i para-xocs posterior",
+  "ba.2.a": "Aleta i para-xocs posterior abonyegats, abans de la reparació",
+  "ba.2.b": "Aleta i para-xocs reparats i pintats",
   "nav.serveis": "Serveis",
   "wa.label": "Escriu-nos per WhatsApp",
   "wa.href": "https://wa.me/34658064214?text=Hola%2C%20us%20escric%20des%20de%20la%20web.%20Voldria%20demanar%20pressupost%20per%20al%20meu%20cotxe.",
@@ -211,6 +224,19 @@
   "ui.quote": "Pide presupuesto",
   "ui.stars5": "5,0 de 5 estrellas",
   "nav.inici": "Inicio",
+  "ba.title": "Antes y después",
+  "ba.sub": "Desliza para ver más reparaciones",
+  "ba.prev": "Reparación anterior",
+  "ba.next": "Reparación siguiente",
+  "ba.region": "Reparaciones antes y después",
+  "ba.before": "Antes",
+  "ba.after": "Después",
+  "ba.1.title": "Aleta trasera",
+  "ba.1.a": "Aleta trasera de un coche rojo hundida, antes de la reparación",
+  "ba.1.b": "El mismo coche rojo con la aleta reparada y pintada",
+  "ba.2.title": "Aleta y paragolpes trasero",
+  "ba.2.a": "Aleta y paragolpes trasero abollados, antes de la reparación",
+  "ba.2.b": "Aleta y paragolpes reparados y pintados",
   "nav.serveis": "Servicios",
   "wa.label": "Escríbenos por WhatsApp",
   "wa.href": "https://wa.me/34658064214?text=Hola%2C%20os%20escribo%20desde%20la%20web.%20Quer%C3%ADa%20pedir%20presupuesto%20para%20mi%20coche.",
@@ -462,6 +488,37 @@
     qsa('[data-year]').forEach(function (el) { el.textContent = String(new Date().getFullYear()); });
   }
 
+
+  /* ---------- Carrusel abans/després ---------- */
+  function initBeforeAfter() {
+    qsa('[data-ba]').forEach(function (root) {
+      if (!root.classList.contains('ba')) { return; }
+      var track = root.querySelector('.ba__track');
+      var items = qsa('.ba__item', track);
+      var prev = root.querySelector('[data-ba="prev"]');
+      var next = root.querySelector('[data-ba="next"]');
+      var cur = root.querySelector('[data-ba-current]');
+      function index() { return Math.round(track.scrollLeft / Math.max(1, track.clientWidth)); }
+      function go(i) { i = Math.max(0, Math.min(items.length - 1, i)); track.scrollTo({ left: items[i].offsetLeft - track.offsetLeft, behavior: 'smooth' }); }
+      function update() {
+        var i = index();
+        if (cur) { cur.textContent = String(i + 1); }
+        prev.disabled = i <= 0;
+        next.disabled = i >= items.length - 1;
+      }
+      prev.addEventListener('click', function () { go(index() - 1); });
+      next.addEventListener('click', function () { go(index() + 1); });
+      track.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft') { e.preventDefault(); go(index() - 1); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); go(index() + 1); }
+      });
+      var tm; track.addEventListener('scroll', function () { clearTimeout(tm); tm = setTimeout(update, 60); }, { passive: true });
+      window.addEventListener('resize', update);
+      window.addEventListener('hashchange', function () { setTimeout(update, 50); });
+      update();
+    });
+  }
+
   /* ---------- Formulari (Web3Forms) ---------- */
   function initForm() {
     var form = document.querySelector('form[data-form]');
@@ -662,6 +719,7 @@
     initMenu();
     initYear();
     initForm();
+    initBeforeAfter();
     initMap();
     initReviews();
     document.addEventListener('click', function (e) {
