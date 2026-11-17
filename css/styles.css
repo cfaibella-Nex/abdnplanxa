@@ -626,3 +626,22 @@ main:focus { outline: none; }
 .nx-credit__part { white-space: nowrap; }
 @media (max-width: 640px) { .nx-credit__sep { display: none; } .nx-credit__part { display: block; } }
 @media (max-width: 640px) { .nx-credit { text-align: left; margin-left: 0; } }
+
+/* ===== v6 · franja de confiança ===== */
+.ab-trust { position: relative; overflow: hidden; background: var(--surface); border-bottom: 1px solid var(--line); padding: 18px 0; }
+.ab-trust::before, .ab-trust::after { content: ""; position: absolute; top: 0; bottom: 0; width: 80px; z-index: 1; pointer-events: none; }
+.ab-trust::before { left: 0; background: linear-gradient(90deg, var(--surface), rgba(255, 255, 255, 0)); }
+.ab-trust::after { right: 0; background: linear-gradient(-90deg, var(--surface), rgba(255, 255, 255, 0)); }
+.ab-trust__viewport { display: flex; width: max-content; animation: ab-trust 38s linear infinite; }
+.ab-trust:hover .ab-trust__viewport { animation-play-state: paused; }
+.ab-trust__list { display: flex; flex: none; gap: 14px; margin: 0; padding: 0 7px; list-style: none; }
+.ab-trust__item { display: inline-flex; align-items: center; gap: 10px; padding: 10px 18px; border-radius: 999px; background: var(--panel); border: 1px solid rgba(11, 33, 63, .08); font-size: 14.67px; font-weight: 700; color: var(--navy); white-space: nowrap; }
+.ab-trust__item svg { width: 20px; height: 20px; flex: none; fill: none; stroke: var(--navy); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+@keyframes ab-trust { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (max-width: 640px) { .ab-trust { padding: 12px 0; } .ab-trust__item { font-size: 13.33px; padding: 8px 14px; } .ab-trust::before, .ab-trust::after { width: 32px; } }
+@media (prefers-reduced-motion: reduce) {
+  .ab-trust__viewport { animation: none; width: auto; justify-content: center; }
+  .ab-trust__list { flex: 1 1 auto; flex-wrap: wrap; justify-content: center; row-gap: 10px; padding: 0 16px; }
+  .ab-trust__list[aria-hidden="true"] { display: none; }
+  .ab-trust::before, .ab-trust::after { display: none; }
+}
