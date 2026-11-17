@@ -627,21 +627,52 @@ main:focus { outline: none; }
 @media (max-width: 640px) { .nx-credit__sep { display: none; } .nx-credit__part { display: block; } }
 @media (max-width: 640px) { .nx-credit { text-align: left; margin-left: 0; } }
 
-/* ===== v6 · franja de confiança ===== */
-.ab-trust { position: relative; overflow: hidden; background: var(--surface); border-bottom: 1px solid var(--line); padding: 18px 0; }
-.ab-trust::before, .ab-trust::after { content: ""; position: absolute; top: 0; bottom: 0; width: 80px; z-index: 1; pointer-events: none; }
-.ab-trust::before { left: 0; background: linear-gradient(90deg, var(--surface), rgba(255, 255, 255, 0)); }
-.ab-trust::after { right: 0; background: linear-gradient(-90deg, var(--surface), rgba(255, 255, 255, 0)); }
-.ab-trust__viewport { display: flex; width: max-content; animation: ab-trust 38s linear infinite; }
-.ab-trust:hover .ab-trust__viewport { animation-play-state: paused; }
-.ab-trust__list { display: flex; flex: none; gap: 14px; margin: 0; padding: 0 7px; list-style: none; }
-.ab-trust__item { display: inline-flex; align-items: center; gap: 10px; padding: 10px 18px; border-radius: 999px; background: var(--panel); border: 1px solid rgba(11, 33, 63, .08); font-size: 14.67px; font-weight: 700; color: var(--navy); white-space: nowrap; }
-.ab-trust__item svg { width: 20px; height: 20px; flex: none; fill: none; stroke: var(--navy); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-@keyframes ab-trust { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-@media (max-width: 640px) { .ab-trust { padding: 12px 0; } .ab-trust__item { font-size: 13.33px; padding: 8px 14px; } .ab-trust::before, .ab-trust::after { width: 32px; } }
-@media (prefers-reduced-motion: reduce) {
-  .ab-trust__viewport { animation: none; width: auto; justify-content: center; }
-  .ab-trust__list { flex: 1 1 auto; flex-wrap: wrap; justify-content: center; row-gap: 10px; padding: 0 16px; }
-  .ab-trust__list[aria-hidden="true"] { display: none; }
-  .ab-trust::before, .ab-trust::after { display: none; }
+/* ===== v7 · garanties: targetes en onada + spotlight ===== */
+.ab-g { padding: var(--space-40) 0; background: linear-gradient(180deg, #f3f5f8 0%, #ffffff 100%); border-bottom: 1px solid var(--line); }
+.ab-g__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
+.ab-g__card { position: relative; display: flex; align-items: center; gap: 14px; min-height: 76px; padding: 14px 18px; border-radius: 18px; background: #fff; border: 1px solid rgba(11, 33, 63, .08); box-shadow: 0 2px 10px rgba(11, 33, 63, .05); overflow: hidden; isolation: isolate; transition: transform .35s cubic-bezier(.2, .7, .2, 1), box-shadow .35s ease, border-color .35s ease; }
+.ab-g__card::before { content: ""; position: absolute; inset: 0; z-index: -1; opacity: 0; transition: opacity .3s ease; background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(242, 183, 5, .22), transparent 65%); }
+.ab-g__grid.is-lit .ab-g__card::before { opacity: 1; }
+.ab-g__card:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(11, 33, 63, .12); border-color: rgba(242, 183, 5, .55); }
+.ab-g__icon { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 44px; height: 44px; border-radius: 14px; background: var(--navy); color: #fff; transition: background-color .3s ease, color .3s ease, transform .35s cubic-bezier(.2, .7, .2, 1); }
+.ab-g__icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.ab-g__card:hover .ab-g__icon { background: var(--amber); color: var(--navy); transform: rotate(-6deg) scale(1.06); }
+.ab-g__text { font-size: 15.33px; line-height: 1.3; font-weight: 700; color: var(--navy); }
+/* onada: de menys a més */
+.ab-g.is-armed .ab-g__card { opacity: 0; transform: translateY(18px) scale(.94); clip-path: inset(0 100% 0 0 round 18px); }
+.ab-g.is-armed .ab-g__icon { transform: scale(.4); }
+.ab-g.is-armed.is-in .ab-g__card { opacity: 1; transform: none; clip-path: inset(0 0 0 0 round 18px); transition: opacity .5s ease calc(var(--i) * 110ms), transform .7s cubic-bezier(.2, .8, .2, 1) calc(var(--i) * 110ms), clip-path .8s cubic-bezier(.65, 0, .35, 1) calc(var(--i) * 110ms), box-shadow .35s ease, border-color .35s ease; }
+.ab-g.is-armed.is-in .ab-g__icon { transform: none; transition: transform .6s cubic-bezier(.34, 1.56, .64, 1) calc(var(--i) * 110ms + 350ms), background-color .3s ease, color .3s ease; }
+.ab-g.is-armed.is-in .ab-g__card:hover { transform: translateY(-3px); }
+.ab-g.is-armed.is-in .ab-g__card:hover .ab-g__icon { transform: rotate(-6deg) scale(1.06); }
+@media (max-width: 959px) { .ab-g__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) {
+  .ab-g { padding: var(--space-25) 0; }
+  .ab-g__grid { gap: 10px; }
+  .ab-g__card { flex-direction: column; align-items: flex-start; gap: 10px; min-height: 0; padding: 14px; border-radius: 16px; }
+  .ab-g__icon { width: 38px; height: 38px; border-radius: 12px; }
+  .ab-g__text { font-size: 13.33px; }
+}
+
+/* ===== v7 · Contacte amb foto i vel ===== */
+.route[data-route="contacte"] { position: relative; isolation: isolate; }
+.route[data-route="contacte"]::before { content: ""; position: absolute; inset: 0; z-index: -2; background: url("../img/foto-12-8487423c5d.webp") center 40% / cover no-repeat; }
+.route[data-route="contacte"]::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(11, 33, 63, .78) 0, rgba(11, 33, 63, .62) 260px, rgba(243, 245, 248, .9) 520px, rgba(243, 245, 248, .96) 100%); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+.route[data-route="contacte"] .page-head .ab-section__title { color: #fff; }
+.route[data-route="contacte"] .page-head .ab-section__subtitle { color: rgba(255, 255, 255, .85); }
+.route[data-route="contacte"] .contact > div:first-child { padding: var(--space-40); border-radius: 24px; background: rgba(255, 255, 255, .9); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border: 1px solid rgba(255, 255, 255, .7); box-shadow: 0 24px 60px rgba(11, 33, 63, .18); }
+.route[data-route="contacte"] .contact__aside > * { border-radius: 20px; overflow: hidden; background: rgba(255, 255, 255, .9); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 18px 44px rgba(11, 33, 63, .14); }
+@media (max-width: 640px) { .route[data-route="contacte"] .contact > div:first-child { padding: var(--space-25) var(--space-16); border-radius: 18px; } }
+
+/* ===== v7 · Serveis amb marca d'aigua ===== */
+.route[data-route="serveis"] { position: relative; isolation: isolate; overflow: hidden; background: linear-gradient(180deg, #eef2f7 0, #f8fafc 480px, #f3f5f8 100%); }
+.route[data-route="serveis"]::before { content: "A BDN"; position: absolute; z-index: -1; top: 40px; right: -2vw; font-size: clamp(150px, 28vw, 440px); line-height: .8; font-weight: 800; letter-spacing: -.04em; color: rgba(11, 33, 63, .035); -webkit-text-stroke: 2px rgba(11, 33, 63, .07); pointer-events: none; white-space: nowrap; }
+.route[data-route="serveis"]::after { content: ""; position: absolute; z-index: -1; left: -10vw; top: 52%; width: 46vw; height: 46vw; max-width: 640px; max-height: 640px; border-radius: 50%; background: radial-gradient(closest-side, rgba(242, 183, 5, .12), transparent); pointer-events: none; }
+.route[data-route="serveis"] .service { padding: var(--space-40); border-radius: 26px; background: rgba(255, 255, 255, .74); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, .8); box-shadow: 0 18px 50px rgba(11, 33, 63, .08); }
+.route[data-route="serveis"] .service + .service { margin-top: var(--space-30); padding-top: var(--space-40); border-top: 1px solid rgba(255, 255, 255, .8); }
+.route[data-route="serveis"] .service .ab-photo { border-radius: 18px; overflow: hidden; }
+@media (max-width: 640px) { .route[data-route="serveis"] .service { padding: var(--space-16); border-radius: 18px; } .route[data-route="serveis"]::before { top: 20px; } }
+@media (prefers-reduced-motion: reduce) { .ab-g__card, .ab-g__icon, .ab-g__card::before { transition: none; } }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .route[data-route="contacte"] .contact > div:first-child, .route[data-route="contacte"] .contact__aside > *, .route[data-route="serveis"] .service { background: #fff; }
 }

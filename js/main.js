@@ -559,6 +559,34 @@
     later();
   }
 
+
+  /* ---------- Garanties: apareixen en onada + llum que segueix el cursor ---------- */
+  function initGuarantees() {
+    qsa('[data-guarantees]').forEach(function (root) {
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!reduce && 'IntersectionObserver' in window) {
+        root.classList.add('is-armed');
+        var io = new IntersectionObserver(function (es) {
+          if (es[0].isIntersecting) { root.classList.add('is-in'); io.disconnect(); }
+        }, { threshold: 0.35 });
+        io.observe(root);
+        setTimeout(function () { root.classList.add('is-in'); }, 6000); /* reserva */
+      }
+      var grid = root.querySelector('.ab-g__grid');
+      if (!grid || !window.matchMedia('(hover: hover)').matches) { return; }
+      var cardsEl = qsa('.ab-g__card', grid);
+      grid.addEventListener('pointermove', function (e) {
+        cardsEl.forEach(function (c) {
+          var r = c.getBoundingClientRect();
+          c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+          c.style.setProperty('--my', (e.clientY - r.top) + 'px');
+        });
+        grid.classList.add('is-lit');
+      });
+      grid.addEventListener('pointerleave', function () { grid.classList.remove('is-lit'); });
+    });
+  }
+
   /* ---------- Carrusel abans/després (automàtic, amb pausa) ---------- */
   var BA_DELAY = 5000;
   function initBeforeAfter() {
@@ -825,6 +853,7 @@
     initYear();
     initForm();
     initBeforeAfter();
+    initGuarantees();
     initHeaderScroll();
     initReveal();
     initMap();
