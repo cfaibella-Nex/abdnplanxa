@@ -676,3 +676,16 @@ main:focus { outline: none; }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .route[data-route="contacte"] .contact > div:first-child, .route[data-route="contacte"] .contact__aside > *, .route[data-route="serveis"] .service { background: #fff; }
 }
+
+/* ===== v8 · Treballs amb la mateixa marca d'aigua que Serveis ===== */
+.route[data-route="treballs"] { position: relative; isolation: isolate; overflow: hidden; background: linear-gradient(180deg, #eef2f7 0, #f8fafc 480px, #f3f5f8 100%); }
+.route[data-route="treballs"]::before { content: "A BDN"; position: absolute; z-index: -1; top: 40px; right: -2vw; font-size: clamp(150px, 28vw, 440px); line-height: .8; font-weight: 800; letter-spacing: -.04em; color: rgba(11, 33, 63, .035); -webkit-text-stroke: 2px rgba(11, 33, 63, .07); pointer-events: none; white-space: nowrap; }
+.route[data-route="treballs"]::after { content: ""; position: absolute; z-index: -1; right: -12vw; top: 48%; width: 46vw; height: 46vw; max-width: 640px; max-height: 640px; border-radius: 50%; background: radial-gradient(closest-side, rgba(242, 183, 5, .12), transparent); pointer-events: none; }
+.route[data-route="treballs"] .case { padding: var(--space-40); border-radius: 26px; background: rgba(255, 255, 255, .74); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, .8); box-shadow: 0 18px 50px rgba(11, 33, 63, .08); }
+.route[data-route="treballs"] .case + .case { margin-top: var(--space-30); }
+.route[data-route="treballs"] .case .ab-photo, .route[data-route="treballs"] .gallery .ab-photo { border-radius: 18px; overflow: hidden; }
+.route[data-route="treballs"] .section--panel { background: transparent; border: 0; }
+.route[data-route="treballs"] .gallery > li { border-radius: 20px; background: rgba(255, 255, 255, .74); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 14px 36px rgba(11, 33, 63, .08); padding: 10px; }
+.route[data-route="treballs"] .cta, .route[data-route="serveis"] .cta { background: transparent; }
+@media (max-width: 640px) { .route[data-route="treballs"] .case { padding: var(--space-16); border-radius: 18px; } .route[data-route="treballs"]::before { top: 20px; } }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) { .route[data-route="treballs"] .case, .route[data-route="treballs"] .gallery > li { background: #fff; } }
