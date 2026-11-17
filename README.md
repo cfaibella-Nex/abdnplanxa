@@ -17,3 +17,6 @@ Ressenyes: el recompte (101) és a `index.html` i a `js/main.js` (`rev.basedOn`,
 
 WhatsApp: botó flotant (`.ab-wa`) cap al 658 06 42 14; el text prefixat és a `js/main.js` (`wa.href`).
 SEO: etiquetes Open Graph i fitxa schema.org `AutoBodyShop` al `<head>` de `index.html`; si canvia l'horari o el telèfon, actualitza-la també.
+
+v3 (nov 2026): capçalera de vidre enganxosa, hero a pantalla completa, aparicions en fer scroll (`initReveal`, respecta reduir moviment) i barra fixa al mòbil (`.ab-mbar`, substitueix el botó flotant de WhatsApp per sota de 960 px).
+Crèdit al peu: `.nx-credit` («Web: Nexmetis · NexSocial SCCL»), model comú per a totes les webs de la cooperativa.

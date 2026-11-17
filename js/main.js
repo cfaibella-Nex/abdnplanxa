@@ -19,6 +19,9 @@
   "ui.quote": "Demana pressupost",
   "ui.stars5": "5,0 de 5 estrelles",
   "nav.inici": "Inici",
+  "bar.call": "Truca",
+  "bar.quote": "Pressupost",
+  "bar.label": "Contacte ràpid",
   "ba.title": "Abans i després",
   "ba.sub": "Llisca per veure més reparacions",
   "ba.prev": "Reparació anterior",
@@ -224,6 +227,9 @@
   "ui.quote": "Pide presupuesto",
   "ui.stars5": "5,0 de 5 estrellas",
   "nav.inici": "Inicio",
+  "bar.call": "Llama",
+  "bar.quote": "Presupuesto",
+  "bar.label": "Contacto rápido",
   "ba.title": "Antes y después",
   "ba.sub": "Desliza para ver más reparaciones",
   "ba.prev": "Reparación anterior",
@@ -489,6 +495,50 @@
   }
 
 
+
+  /* ---------- Capçalera: estat en fer scroll ---------- */
+  function initHeaderScroll() {
+    var header = document.querySelector('.ab-header');
+    if (!header) { return; }
+    var ticking = false;
+    function update() { header.classList.toggle('is-scrolled', window.scrollY > 12); ticking = false; }
+    window.addEventListener('scroll', function () { if (!ticking) { ticking = true; window.requestAnimationFrame(update); } }, { passive: true });
+    update();
+  }
+
+  /* ---------- Aparicions en fer scroll (respecta «reduir moviment») ---------- */
+  function initReveal() {
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || !('IntersectionObserver' in window)) { return; }
+    var sel = ['.section .ab-section', '.section .ab-case', '.section .ba', '.section .rw', '.section .case',
+               '.section .gallery > li', '.section .ab-panel', '.section .ab-value-tile', '.section .ab-form',
+               '.section .ab-band', '.page-head .wrap > *'].join(',');
+    var els = qsa(sel).filter(function (el) { return !el.closest('.ab-hero') && !el.parentElement.closest('.rv'); });
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    els.forEach(function (el) {
+      var sibs = el.parentElement ? Array.prototype.indexOf.call(el.parentElement.children, el) : 0;
+      el.style.setProperty('--rv-delay', (Math.min(sibs, 4) * 70) + 'ms');
+      el.classList.add('rv');
+      io.observe(el);
+    });
+    /* reserva: en canviar de pàgina (#ruta) o fer scroll, mostra el que ja és a la vista */
+    function sweep() {
+      var vh = window.innerHeight;
+      qsa('.rv:not(.is-in)').forEach(function (el) {
+        var r = el.getBoundingClientRect();
+        if (r.height > 0 && r.top < vh * 0.96) { el.classList.add('is-in'); io.unobserve(el); }
+      });
+    }
+    var t = null;
+    function later() { if (t) { return; } t = setTimeout(function () { t = null; sweep(); }, 80); }
+    window.addEventListener('hashchange', function () { window.requestAnimationFrame(later); });
+    window.addEventListener('scroll', later, { passive: true });
+    window.addEventListener('resize', later);
+    later();
+  }
+
   /* ---------- Carrusel abans/després ---------- */
   function initBeforeAfter() {
     qsa('[data-ba]').forEach(function (root) {
@@ -720,6 +770,8 @@
     initYear();
     initForm();
     initBeforeAfter();
+    initHeaderScroll();
+    initReveal();
     initMap();
     initReviews();
     document.addEventListener('click', function (e) {
