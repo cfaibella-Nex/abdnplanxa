@@ -573,7 +573,7 @@ main:focus { outline: none; }
 @media (max-width: 959px) {
   .ab-header__tools { display: none; }
   .ab-wa { display: none; }
-  body { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
+  .ab-footer { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
   .ab-mbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 55; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 8px 12px calc(8px + env(safe-area-inset-bottom)); background: rgba(11, 33, 63, .82); -webkit-backdrop-filter: blur(16px) saturate(160%); backdrop-filter: blur(16px) saturate(160%); border-top: 1px solid rgba(255, 255, 255, .12); box-shadow: 0 -8px 30px rgba(11, 33, 63, .18); }
   .ab-mbar__btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-height: 52px; border-radius: 12px; background: rgba(255, 255, 255, .1); border: 1px solid rgba(255, 255, 255, .16); color: #fff; font-size: 12.67px; font-weight: 700; text-decoration: none; }
   .ab-mbar__btn svg { width: 22px; height: 22px; }
@@ -590,3 +590,39 @@ main:focus { outline: none; }
 .nx-credit a:hover, .nx-credit a:focus-visible { opacity: 1; color: #fff; }
 
 @media (min-width: 960px) { .ab-footer__legal { padding-bottom: 96px; } }
+
+/* ===== v4 · carrusel abans/després arrodonit i automàtic ===== */
+.ba { --ba-r: 24px; }
+.ba__track { gap: 24px; padding: 6px 12px 26px; margin: -6px -12px -26px; scroll-padding-inline: 12px; }
+.ba-card__pair { gap: 10px; background: transparent; border-radius: var(--ba-r); overflow: visible; }
+.ba-card__fig { border-radius: var(--ba-r); overflow: hidden; box-shadow: 0 8px 18px rgba(11, 33, 63, .14); background: var(--panel); }
+.ba-card__fig img { transition: transform 6s ease-out; }
+.ba.is-playing .ba__item .ba-card__fig img { transform: scale(1.04); }
+.ba-card__tag { left: 16px; top: 16px; padding: 6px 14px; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); background: rgba(11, 33, 63, .78); box-shadow: 0 4px 12px rgba(0, 0, 0, .15); }
+.ba-card__tag--after { background: rgba(242, 183, 5, .92); }
+.ba-card__title { margin-top: var(--space-16); }
+.ba .ba__nav { width: 48px; height: 48px; background: rgba(255, 255, 255, .9); border-color: rgba(11, 33, 63, .12); box-shadow: 0 6px 18px rgba(11, 33, 63, .12); }
+.ba .ba__nav:hover { background: #fff; border-color: var(--navy); }
+.ba__controls { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: var(--space-16); }
+.ba__dots { display: flex; gap: 8px; }
+.ba__dot { width: 10px; height: 10px; padding: 0; border: 0; border-radius: 999px; background: rgba(11, 33, 63, .22); cursor: pointer; transition: width .3s ease, background-color .3s ease; }
+.ba__dot[aria-current="true"] { width: 28px; background: var(--amber); }
+.ba__dot:focus-visible, .ba__toggle:focus-visible { outline: 2px solid transparent; box-shadow: var(--focus-ring); }
+.ba__toggle { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; padding: 0; border: 1px solid rgba(11, 33, 63, .15); border-radius: 999px; background: #fff; color: var(--navy); cursor: pointer; }
+.ba__toggle svg { width: 16px; height: 16px; }
+.ba__toggle .ba__ico-play, .ba__toggle[aria-pressed="true"] .ba__ico-pause { display: none; }
+.ba__toggle[aria-pressed="true"] .ba__ico-play { display: block; }
+.section--panel .ba__toggle { background: var(--surface); }
+@media (max-width: 640px) {
+  .ba { --ba-r: 18px; }
+  .ba-card__pair { gap: 6px; }
+  .ba__controls { grid-row: 3; }
+  .ba-card__tag { left: 10px; top: 10px; padding: 4px 10px; font-size: 12px; }
+}
+@media (prefers-reduced-motion: reduce) { .ba-card__fig img, .ba__dot { transition: none; } .ba.is-playing .ba__item .ba-card__fig img { transform: none; } }
+
+/* crèdit: dues parts que poden partir línia netament */
+.nx-credit { max-width: 100%; text-align: right; }
+.nx-credit__part { white-space: nowrap; }
+@media (max-width: 640px) { .nx-credit__sep { display: none; } .nx-credit__part { display: block; } }
+@media (max-width: 640px) { .nx-credit { text-align: left; margin-left: 0; } }

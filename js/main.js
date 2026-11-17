@@ -19,6 +19,9 @@
   "ui.quote": "Demana pressupost",
   "ui.stars5": "5,0 de 5 estrelles",
   "nav.inici": "Inici",
+  "ba.pause": "Atura el carrusel",
+  "ba.play": "Reprèn el carrusel",
+  "credit.nx": "<span class=\"nx-credit__part\">Disseny i desenvolupament web per <a href=\"https://nexmetis.nexsocial.org/\" target=\"_blank\" rel=\"noopener\">Nexmetis Tech</a></span> <span class=\"nx-credit__sep\" aria-hidden=\"true\">·</span> <span class=\"nx-credit__part\">Divisió tecnològica de <a href=\"https://nexsocial.org/\" target=\"_blank\" rel=\"noopener\">NexSocial</a></span>",
   "bar.call": "Truca",
   "bar.quote": "Pressupost",
   "bar.label": "Contacte ràpid",
@@ -227,6 +230,9 @@
   "ui.quote": "Pide presupuesto",
   "ui.stars5": "5,0 de 5 estrellas",
   "nav.inici": "Inicio",
+  "ba.pause": "Detener el carrusel",
+  "ba.play": "Reanudar el carrusel",
+  "credit.nx": "<span class=\"nx-credit__part\">Diseño y desarrollo web por <a href=\"https://nexmetis.nexsocial.org/\" target=\"_blank\" rel=\"noopener\">Nexmetis Tech</a></span> <span class=\"nx-credit__sep\" aria-hidden=\"true\">·</span> <span class=\"nx-credit__part\">División tecnológica de <a href=\"https://nexsocial.org/\" target=\"_blank\" rel=\"noopener\">NexSocial</a></span>",
   "bar.call": "Llama",
   "bar.quote": "Presupuesto",
   "bar.label": "Contacto rápido",
@@ -539,33 +545,68 @@
     later();
   }
 
-  /* ---------- Carrusel abans/després ---------- */
+  /* ---------- Carrusel abans/després (automàtic, amb pausa) ---------- */
+  var BA_DELAY = 5000;
   function initBeforeAfter() {
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     qsa('[data-ba]').forEach(function (root) {
       if (!root.classList.contains('ba')) { return; }
       var track = root.querySelector('.ba__track');
       var items = qsa('.ba__item', track);
-      var prev = root.querySelector('[data-ba="prev"]');
-      var next = root.querySelector('[data-ba="next"]');
-      var cur = root.querySelector('[data-ba-current]');
+      var dots = qsa('[data-ba-dot]', root);
+      var toggle = root.querySelector('[data-ba="toggle"]');
+      var timer = null, userPaused = reduce, hover = false, visible = false;
+      if (items.length < 2) { if (toggle) { toggle.hidden = true; } return; }
+
       function index() { return Math.round(track.scrollLeft / Math.max(1, track.clientWidth)); }
-      function go(i) { i = Math.max(0, Math.min(items.length - 1, i)); track.scrollTo({ left: items[i].offsetLeft - track.offsetLeft, behavior: 'smooth' }); }
+      function go(i) {
+        i = (i + items.length) % items.length;
+        track.scrollTo({ left: i * track.clientWidth, behavior: reduce ? 'auto' : 'smooth' });
+      }
       function update() {
         var i = index();
-        if (cur) { cur.textContent = String(i + 1); }
-        prev.disabled = i <= 0;
-        next.disabled = i >= items.length - 1;
+        dots.forEach(function (d, k) { if (k === i) { d.setAttribute('aria-current', 'true'); } else { d.removeAttribute('aria-current'); } });
       }
-      prev.addEventListener('click', function () { go(index() - 1); });
-      next.addEventListener('click', function () { go(index() + 1); });
+      function running() { return !userPaused && !hover && visible && !document.hidden && !root.closest('[hidden]'); }
+      function schedule() {
+        clearTimeout(timer); timer = null;
+        if (running()) { timer = setTimeout(function () { go(index() + 1); schedule(); }, BA_DELAY); }
+        root.classList.toggle('is-playing', !!timer);
+      }
+      function setPaused(p) {
+        userPaused = p;
+        toggle.setAttribute('aria-pressed', p ? 'true' : 'false');
+        toggle.setAttribute('data-i18n-attr', 'aria-label:' + (p ? 'ba.play' : 'ba.pause'));
+        toggle.setAttribute('aria-label', t(p ? 'ba.play' : 'ba.pause'));
+        schedule();
+      }
+
+      root.querySelector('[data-ba="prev"]').addEventListener('click', function () { go(index() - 1); schedule(); });
+      root.querySelector('[data-ba="next"]').addEventListener('click', function () { go(index() + 1); schedule(); });
+      dots.forEach(function (d, k) { d.addEventListener('click', function () { go(k); schedule(); }); });
+      toggle.addEventListener('click', function () { setPaused(!userPaused); });
       track.addEventListener('keydown', function (e) {
-        if (e.key === 'ArrowLeft') { e.preventDefault(); go(index() - 1); }
-        if (e.key === 'ArrowRight') { e.preventDefault(); go(index() + 1); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); go(index() - 1); schedule(); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); go(index() + 1); schedule(); }
       });
+      /* s'atura mentre el ratolí, el dit o el focus són a sobre */
+      root.addEventListener('mouseenter', function () { hover = true; schedule(); });
+      root.addEventListener('mouseleave', function () { hover = false; schedule(); });
+      root.addEventListener('focusin', function () { hover = true; schedule(); });
+      root.addEventListener('focusout', function (e) { if (!root.contains(e.relatedTarget)) { hover = false; schedule(); } });
+      track.addEventListener('touchstart', function () { hover = true; schedule(); }, { passive: true });
+      track.addEventListener('touchend', function () { setTimeout(function () { hover = false; schedule(); }, 4000); }, { passive: true });
+      /* només corre quan és a la pantalla i la pestanya és visible */
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (es) { visible = es[0].isIntersecting; schedule(); }, { threshold: 0.4 }).observe(root);
+      } else { visible = true; }
+      document.addEventListener('visibilitychange', schedule);
+      window.addEventListener('hashchange', function () { setTimeout(function () { update(); schedule(); }, 60); });
+
       var tm; track.addEventListener('scroll', function () { clearTimeout(tm); tm = setTimeout(update, 60); }, { passive: true });
       window.addEventListener('resize', update);
-      window.addEventListener('hashchange', function () { setTimeout(update, 50); });
-      update();
+      if (reduce) { setPaused(true); }
+      update(); schedule();
     });
   }
 
