@@ -19,6 +19,10 @@
   "ui.quote": "Demana pressupost",
   "ui.stars5": "5,0 de 5 estrelles",
   "nav.inici": "Inici",
+  "pile.pause": "Atura les ressenyes",
+  "pile.play": "Reprèn les ressenyes",
+  "pile.next": "Ressenya següent",
+  "pile.of": "de",
   "deck.pause": "Atura la reproducció",
   "deck.play": "Reprèn la reproducció",
   "deck.hintPlay": "Prem pausa per aturar-la i mirar cada foto amb calma",
@@ -274,6 +278,10 @@
   "ui.quote": "Pide presupuesto",
   "ui.stars5": "5,0 de 5 estrellas",
   "nav.inici": "Inicio",
+  "pile.pause": "Detener las reseñas",
+  "pile.play": "Reanudar las reseñas",
+  "pile.next": "Reseña siguiente",
+  "pile.of": "de",
   "deck.pause": "Detener la reproducción",
   "deck.play": "Reanudar la reproducción",
   "deck.hintPlay": "Pulsa pausa para detenerla y mirar cada foto con calma",
@@ -1079,6 +1087,111 @@
     });
   }
 
+
+  /* ---------- Ressenyes: pila de papers que es va fent sola ---------- */
+  function initPile() {
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) { return; } /* amb «reduir moviment» es queda el carrusel normal */
+    qsa('[data-reviews]').forEach(function (root) {
+      var track = root.querySelector('.rw__track');
+      var items = qsa('.rw__item', track);
+      if (!track || items.length < 2) { return; }
+      var ROT = [-4, 3, -2, 5, -5, 2, -3, 4, -1, 6, -6, 1];
+      var OFX = [-10, 12, -4, 8, -14, 6, -8, 14, 0, -12, 10, -6];
+      var OFY = [4, -2, 8, 0, 6, -4, 2, 10, -6, 4, 0, 8];
+      items.forEach(function (it, i) {
+        it.style.setProperty('--r', ROT[i % ROT.length] + 'deg');
+        it.style.setProperty('--x', OFX[i % OFX.length] + 'px');
+        it.style.setProperty('--y', OFY[i % OFY.length] + 'px');
+      });
+      root.classList.add('rw--pile');
+
+      var bar = document.createElement('div');
+      bar.className = 'rw-pile__bar';
+      bar.innerHTML =
+        '<p class="rw-pile__count" aria-live="polite"><span data-pile-n>1</span> <span data-i18n="pile.of">' + t('pile.of') + '</span> ' + items.length + '</p>' +
+        '<button type="button" class="rw-pile__btn" data-pile="toggle" aria-pressed="false" aria-label="' + t('pile.pause') + '" data-i18n-attr="aria-label:pile.pause">' +
+        '<svg class="rw-pile__ico-pause" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5v14M16 5v14"/></svg>' +
+        '<svg class="rw-pile__ico-play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.5v13l10.5-6.5z"/></svg></button>' +
+        '<button type="button" class="rw-pile__btn rw-pile__btn--next" data-pile="next" aria-label="' + t('pile.next') + '" data-i18n-attr="aria-label:pile.next">' +
+        '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 18l6-6-6-6"/></svg></button>';
+      track.parentNode.appendChild(bar);
+      var nEl = bar.querySelector('[data-pile-n]');
+      var toggle = bar.querySelector('[data-pile="toggle"]');
+
+      var DROP = 4200, HOLD = 2600, SHOWN = 5;
+      var idx = -1, z = 10, timer = null, userPaused = false, reading = false, visible = false, sweeping = false;
+      function running() { return !userPaused && !reading && visible && !document.hidden && !root.closest('[hidden]'); }
+      function focusables(it, on) {
+        qsa('button, a', it).forEach(function (el) { if (on) { el.removeAttribute('tabindex'); } else { el.setAttribute('tabindex', '-1'); } });
+      }
+      function drop() {
+        idx++;
+        var it = items[idx];
+        it.style.zIndex = String(++z);
+        it.classList.remove('is-wait', 'is-swept', 'is-gone');
+        it.classList.add('is-in', 'is-top');
+        items.forEach(function (o, k) {
+          if (o !== it) { o.classList.remove('is-top'); focusables(o, false); }
+          if (k < idx - SHOWN) { o.classList.add('is-gone'); }
+        });
+        focusables(it, true);
+        nEl.textContent = String(idx + 1);
+      }
+      function sweep(done) {
+        sweeping = true;
+        var shown = items.filter(function (o) { return o.classList.contains('is-in') && !o.classList.contains('is-gone'); }).reverse();
+        shown.forEach(function (o, k) { o.style.setProperty('--k', k); o.classList.add('is-swept'); });
+        setTimeout(function () {
+          items.forEach(function (o) {
+            o.classList.remove('is-in', 'is-top', 'is-swept', 'is-gone', 'is-open');
+            o.classList.add('is-wait'); focusables(o, false);
+            var card = o.querySelector('.rw-card'); if (card) { card.classList.remove('is-open'); }
+            var b = o.querySelector('.rw-card__more'); if (b) { b.setAttribute('aria-expanded', 'false'); var l = b.querySelector('[data-i18n]'); if (l) { l.setAttribute('data-i18n', 'rev.more'); l.textContent = t('rev.more'); } }
+          });
+          idx = -1; z = 10; sweeping = false; done();
+        }, 900);
+      }
+      function tick() {
+        timer = null;
+        if (!running()) { return; }
+        if (idx >= items.length - 1) { sweep(function () { drop(); timer = setTimeout(tick, DROP); }); return; }
+        drop();
+        timer = setTimeout(tick, idx === items.length - 1 ? DROP + HOLD : DROP);
+      }
+      function schedule(delay) {
+        clearTimeout(timer); timer = null;
+        root.classList.toggle('is-playing', running());
+        if (running() && !sweeping) { timer = setTimeout(tick, delay == null ? DROP : delay); }
+      }
+      function setPaused(p) {
+        userPaused = p;
+        toggle.setAttribute('aria-pressed', p ? 'true' : 'false');
+        toggle.setAttribute('data-i18n-attr', 'aria-label:' + (p ? 'pile.play' : 'pile.pause'));
+        toggle.setAttribute('aria-label', t(p ? 'pile.play' : 'pile.pause'));
+        schedule();
+      }
+      toggle.addEventListener('click', function () { setPaused(!userPaused); });
+      bar.querySelector('[data-pile="next"]').addEventListener('click', function () {
+        if (sweeping) { return; }
+        clearTimeout(timer); timer = null;
+        if (idx >= items.length - 1) { sweep(function () { drop(); schedule(); }); } else { drop(); schedule(); }
+      });
+      /* si algú obre «Llegir més», la pila espera fins que la torni a tancar */
+      qsa('.rw-card__more', root).forEach(function (b) {
+        b.addEventListener('click', function () { setTimeout(function () { reading = !!root.querySelector('.rw__item.is-top .rw-card.is-open'); schedule(); }, 0); });
+      });
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (es) { var v = es[0].isIntersecting; if (v !== visible) { visible = v; schedule(idx < 0 ? 300 : DROP); } }, { threshold: 0.35 }).observe(root);
+      } else { visible = true; }
+      document.addEventListener('visibilitychange', function () { schedule(); });
+      window.addEventListener('hashchange', function () { setTimeout(function () { schedule(idx < 0 ? 300 : DROP); }, 80); });
+      items.forEach(function (o) { o.classList.add('is-wait'); focusables(o, false); });
+      drop(); /* la primera ja hi és */
+      schedule();
+    });
+  }
+
   var ROUTES = { 'inici': 'index', 'serveis': 'serveis', 'treballs': 'treballs', 'contacte': 'contacte', 'avis-legal': 'avis', 'privacitat': 'privacitat', 'cookies': 'cookies' };
   function route() {
     var h = decodeURIComponent((window.location.hash || '').slice(1));
@@ -1113,6 +1226,7 @@
     initReveal();
     initMap();
     initReviews();
+    initPile();
     document.addEventListener('click', function (e) {
       var a = e.target.closest ? e.target.closest('a[href^="#"]') : null;
       if (a && a.getAttribute('href') === window.location.hash) { e.preventDefault(); route(); }
