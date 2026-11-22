@@ -21,6 +21,7 @@
   "nav.inici": "Inici",
   "deck.pause": "Atura la reproducció",
   "deck.play": "Reprèn la reproducció",
+  "deck.hintPlay": "Prem pausa per aturar-la i mirar cada foto amb calma",
   "deck.title": "Abans i després",
   "deck.hint": "Mantén premuda la foto per veure el resultat",
   "deck.hintHover": "Passa el ratolí per sobre de la foto per veure el resultat",
@@ -35,10 +36,6 @@
   "stage.process": "Procés",
   "stage.after": "Després",
   "stage.result": "Resultat",
-  "case.portes": "Portes laterals",
-  "case.portes.0": "Portes laterals d’un SUV gris enfonsades i ratllades",
-  "case.portes.1": "Les dues portes amb aprest, abans de pintar",
-  "case.portes.2": "El SUV amb les portes reparades i pintades",
   "case.davanter": "Para-xocs davanter",
   "case.davanter.0": "Para-xocs davanter d’un SUV gris amb ratllades fondes",
   "case.davanter.1": "El mateix para-xocs reparat i pintat",
@@ -55,6 +52,10 @@
   "case.vermell": "Aleta posterior",
   "case.vermell.0": "Aleta posterior d’un cotxe vermell enfonsada, abans de la reparació",
   "case.vermell.1": "El mateix cotxe vermell amb l’aleta reparada i pintada",
+  "case.portes": "Portes laterals",
+  "case.portes.0": "Portes laterals d’un SUV gris enfonsades i ratllades",
+  "case.portes.1": "Les dues portes amb aprest, abans de pintar",
+  "case.portes.2": "El SUV amb les portes reparades i pintades",
   "trust.label": "Garanties del taller",
   "trust.mapfre": "Taller col·laborador de MAPFRE",
   "trust.segurcaixa": "Taller col·laborador de SegurCaixa",
@@ -275,6 +276,7 @@
   "nav.inici": "Inicio",
   "deck.pause": "Detener la reproducción",
   "deck.play": "Reanudar la reproducción",
+  "deck.hintPlay": "Pulsa pausa para detenerla y mirar cada foto con calma",
   "deck.title": "Antes y después",
   "deck.hint": "Mantén pulsada la foto para ver el resultado",
   "deck.hintHover": "Pasa el ratón por encima de la foto para ver el resultado",
@@ -289,10 +291,6 @@
   "stage.process": "Proceso",
   "stage.after": "Después",
   "stage.result": "Resultado",
-  "case.portes": "Puertas laterales",
-  "case.portes.0": "Puertas laterales de un SUV gris hundidas y rayadas",
-  "case.portes.1": "Las dos puertas con aparejo, antes de pintar",
-  "case.portes.2": "El SUV con las puertas reparadas y pintadas",
   "case.davanter": "Paragolpes delantero",
   "case.davanter.0": "Paragolpes delantero de un SUV gris con rayas profundas",
   "case.davanter.1": "El mismo paragolpes reparado y pintado",
@@ -309,6 +307,10 @@
   "case.vermell": "Aleta trasera",
   "case.vermell.0": "Aleta trasera de un coche rojo hundida, antes de la reparación",
   "case.vermell.1": "El mismo coche rojo con la aleta reparada y pintada",
+  "case.portes": "Puertas laterales",
+  "case.portes.0": "Puertas laterales de un SUV gris hundidas y rayadas",
+  "case.portes.1": "Las dos puertas con aparejo, antes de pintar",
+  "case.portes.2": "El SUV con las puertas reparadas y pintadas",
   "trust.label": "Garantías del taller",
   "trust.mapfre": "Taller colaborador de MAPFRE",
   "trust.segurcaixa": "Taller colaborador de SegurCaixa",
@@ -675,7 +677,6 @@
       var stagesEl = root.querySelector('[data-deck-stages]');
       var hint = root.querySelector('[data-deck-hint]');
       var busy = false, stage = 0, peek = false;
-      if (hint && CAN_HOVER) { hint.setAttribute('data-i18n', 'deck.hintHover'); hint.textContent = t('deck.hintHover'); }
       root.classList.add('is-ready');
 
       function top() { return cards[order[0]]; }
@@ -697,6 +698,7 @@
           c.classList.toggle('is-far', pos >= 4);
           if (pos === 0) { c.removeAttribute('aria-hidden'); } else { c.setAttribute('aria-hidden', 'true'); }
         });
+        order.slice(0, 3).forEach(function (ci) { qsa('img', cards[ci]).forEach(function (im) { if (im.loading !== 'eager') { im.loading = 'eager'; } }); });
         var c = top(), id = c.getAttribute('data-case');
         titleEl.setAttribute('data-i18n', 'case.' + id); titleEl.textContent = t('case.' + id);
         nEl.textContent = String(order[0] + 1);
@@ -738,11 +740,11 @@
 
       /* veure el resultat: ratolí a sobre o dit premut; arrossegar per passar */
       var sx = 0, sy = 0, dragging = false, pid = null;
-      stack.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') { peek = true; paint(); } });
+      stack.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse' && userPaused) { peek = true; paint(); } });
       stack.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse') { peek = false; paint(); } });
       stack.addEventListener('pointerdown', function (e) {
         if (busy || !e.target.closest('.deck__card.is-top')) { return; }
-        pid = e.pointerId; sx = e.clientX; sy = e.clientY; dragging = false; peek = true; paint();
+        pid = e.pointerId; sx = e.clientX; sy = e.clientY; dragging = false; if (userPaused) { peek = true; paint(); }
         try { stack.setPointerCapture(pid); } catch (err) {}
       });
       stack.addEventListener('pointermove', function (e) {
@@ -756,7 +758,7 @@
         var c = top(); pid = null;
         if (e.pointerType !== 'mouse') { peek = false; }
         c.classList.remove('is-drag');
-        if (dragging && Math.abs(c._dx || 0) > 90) { go(1); }
+        if (dragging && Math.abs(c._dx || 0) > 90) { go(1); setTimeout(schedule, 450); }
         c.style.setProperty('--dx', '0px'); c.style.setProperty('--rot', '0deg'); dragging = false; paint();
       }
       stack.addEventListener('pointerup', end);
@@ -764,53 +766,61 @@
       layout();
       document.addEventListener('abdn:lang', layout);
 
-      /* reproducció automàtica */
+      /* reproducció automàtica: només s'atura amb el botó (o si no és a la vista) */
       var toggle = root.querySelector('[data-deck="toggle"]');
       var bar = root.querySelector('[data-deck-bar]');
-      var timer = null, userPaused = REDUCE, hover = false, visible = false, touchT = null;
-      var STEP = 2000, AFTER = 2600;
-      function running() { return !userPaused && !hover && visible && !document.hidden && !root.closest('[hidden]'); }
+      var timer = null, userPaused = REDUCE, visible = false;
+      var STEP = 2200, AFTER = 2800;
+      function running() { return !userPaused && visible && !document.hidden && !root.closest('[hidden]'); }
+      function setHint() {
+        if (!hint) { return; }
+        var k = !userPaused ? 'deck.hintPlay' : (CAN_HOVER ? 'deck.hintHover' : 'deck.hint');
+        hint.setAttribute('data-i18n', k); hint.textContent = t(k);
+      }
       function setBar(ms) {
         if (!bar) { return; }
         bar.style.transition = 'none'; bar.style.transform = 'scaleX(0)';
         if (ms) { void bar.offsetWidth; bar.style.transition = 'transform ' + ms + 'ms linear'; bar.style.transform = 'scaleX(1)'; }
       }
+      function cardTime(c) { return STEP * (stagesOf(c).length - 1) + AFTER; }
       function step() {
         timer = null;
         if (!running()) { setBar(0); return; }
         var st = stagesOf(top());
-        if (stage < st.length - 1) { stage++; peek = false; paint(); var wait = stage === st.length - 1 ? AFTER : STEP; timer = setTimeout(step, wait); }
-        else { go(1); timer = setTimeout(step, STEP + 400); setBar(STEP * (stagesOf(cards[order[0]]).length - 1) + AFTER + 400); }
+        if (stage < st.length - 1) {
+          stage++; peek = false; paint();
+          timer = setTimeout(step, stage === st.length - 1 ? AFTER : STEP);
+        } else {
+          go(1);
+          setTimeout(function () { setBar(cardTime(top())); }, 420);
+          timer = setTimeout(step, STEP + 420);
+        }
       }
       function schedule() {
         clearTimeout(timer); timer = null;
         root.classList.toggle('is-playing', running());
         if (running()) {
-          var st = stagesOf(top()), rest = STEP * (st.length - 1 - stage) + AFTER;
-          setBar(rest); timer = setTimeout(step, STEP);
+          stage = 0; peek = false; paint();
+          setBar(cardTime(top()));
+          timer = setTimeout(step, STEP);
         } else { setBar(0); }
       }
       function setPaused(p) {
-        userPaused = p;
+        userPaused = p; peek = false;
         toggle.setAttribute('aria-pressed', p ? 'true' : 'false');
         toggle.setAttribute('data-i18n-attr', 'aria-label:' + (p ? 'deck.play' : 'deck.pause'));
         toggle.setAttribute('aria-label', t(p ? 'deck.play' : 'deck.pause'));
-        schedule();
+        setHint(); schedule();
       }
       toggle.addEventListener('click', function () { setPaused(!userPaused); });
-      root.addEventListener('mouseenter', function () { hover = true; schedule(); });
-      root.addEventListener('mouseleave', function () { hover = false; schedule(); });
-      root.addEventListener('focusin', function (e) { if (e.target !== toggle) { hover = true; schedule(); } });
-      root.addEventListener('focusout', function (e) { if (!root.contains(e.relatedTarget)) { hover = false; schedule(); } });
-      stack.addEventListener('touchstart', function () { clearTimeout(touchT); hover = true; schedule(); }, { passive: true });
-      stack.addEventListener('touchend', function () { clearTimeout(touchT); touchT = setTimeout(function () { hover = false; schedule(); }, 5000); }, { passive: true });
-      qsa('[data-deck="prev"], [data-deck="next"]', root).forEach(function (b) { b.addEventListener('click', function () { setTimeout(schedule, 50); }); });
+      qsa('[data-deck="prev"], [data-deck="next"]', root).forEach(function (b) { b.addEventListener('click', function () { setTimeout(schedule, 450); }); });
       if ('IntersectionObserver' in window) {
-        new IntersectionObserver(function (es) { visible = es[0].isIntersecting; schedule(); }, { threshold: 0.45 }).observe(root);
+        new IntersectionObserver(function (es) { var v = es[0].isIntersecting; if (v !== visible) { visible = v; schedule(); } }, { threshold: 0.35 }).observe(root);
       } else { visible = true; }
       document.addEventListener('visibilitychange', schedule);
+      document.addEventListener('abdn:lang', setHint);
       window.addEventListener('hashchange', function () { setTimeout(schedule, 80); });
-      if (REDUCE) { setPaused(true); } else { schedule(); }
+      setPaused(REDUCE);
     });
   }
 
