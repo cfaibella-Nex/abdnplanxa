@@ -689,3 +689,75 @@ main:focus { outline: none; }
 .route[data-route="treballs"] .cta, .route[data-route="serveis"] .cta { background: transparent; }
 @media (max-width: 640px) { .route[data-route="treballs"] .case { padding: var(--space-16); border-radius: 18px; } .route[data-route="treballs"]::before { top: 20px; } }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) { .route[data-route="treballs"] .case, .route[data-route="treballs"] .gallery > li { background: #fff; } }
+
+/* ===== v9 · baralla abans/després (inici) ===== */
+.deck { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 72px); align-items: center; margin-top: var(--space-30); }
+.deck__stack { position: relative; margin: 0; padding: 0; list-style: none; aspect-ratio: 5 / 4; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.deck__card { position: absolute; inset: 0; border-radius: 26px; overflow: hidden; background: var(--navy); box-shadow: 0 22px 50px rgba(11, 33, 63, .22); z-index: calc(20 - var(--pos)); transform-origin: 50% 100%;
+  transform: translate3d(calc(var(--pos) * 18px), calc(var(--pos) * -14px), 0) scale(calc(1 - var(--pos) * .045)) rotate(calc(var(--pos) * 2.2deg));
+  opacity: calc(1 - var(--pos) * .22); transition: transform .45s cubic-bezier(.2, .8, .2, 1), opacity .45s ease, box-shadow .3s ease; }
+.deck__card:nth-child(n) { cursor: default; }
+.deck__card.is-top { cursor: grab; transform: translate3d(var(--dx, 0px), 0, 0) rotate(var(--rot, 0deg)); }
+.deck__card.is-top.is-drag { cursor: grabbing; transition: none; }
+.deck__card.is-leaving { transform: translate3d(calc(var(--fling, 1) * 130%), -40px, 0) rotate(calc(var(--fling, 1) * 18deg)) !important; opacity: 0 !important; transition: transform .38s cubic-bezier(.5, 0, .75, 0), opacity .38s ease; }
+.deck__card.is-entering { transform: translate3d(-130%, -40px, 0) rotate(-18deg) !important; opacity: 0 !important; }
+.deck__card.is-snap { transition: none !important; }
+.deck__card.is-far { opacity: 0; pointer-events: none; }
+.deck__layer { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity .55s ease; }
+.deck__layer.is-on { opacity: 1; }
+.deck__img { display: block; width: 100%; height: 100%; object-fit: cover; transform: scale(1.04); transition: transform 1.2s cubic-bezier(.2, .8, .2, 1); pointer-events: none; -webkit-user-drag: none; }
+.deck__layer.is-on .deck__img { transform: scale(1); }
+.deck__tag, .flip__tag, .flip__proc-tag { position: absolute; left: 16px; top: 16px; padding: 6px 14px; border-radius: 999px; font-size: 14px; font-weight: 700; line-height: 1.2; background: rgba(11, 33, 63, .8); color: #fff; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.deck__tag--after, .deck__tag--result, .flip__tag--after, .flip__tag--result { background: rgba(242, 183, 5, .94); color: var(--navy); }
+.deck__tag--process, .flip__tag--process { background: rgba(255, 255, 255, .88); color: var(--navy); }
+.deck__side { min-width: 0; }
+.deck__count { margin: 0; font-size: 15px; font-weight: 700; color: var(--slate); font-variant-numeric: tabular-nums; }
+.deck__count span[data-deck-n] { font-size: 44px; line-height: 1; color: var(--navy); }
+.deck__count-sep { margin: 0 6px; }
+.deck__title { margin: var(--space-12) 0 0; font-size: clamp(26px, 3vw, 36px); line-height: 1.1; font-weight: 700; color: var(--navy); overflow-wrap: break-word; min-width: 0; }
+.deck__stages { display: flex; flex-wrap: wrap; gap: 8px; margin-top: var(--space-25); }
+.deck__stage { min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(11, 33, 63, .18); background: #fff; color: var(--navy); font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; transition: background-color .2s ease, color .2s ease, border-color .2s ease; }
+.deck__stage:hover { border-color: var(--navy); }
+.deck__stage[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: #fff; }
+.deck__stage:focus-visible, .deck__btn:focus-visible, .flip:focus-visible { outline: 2px solid transparent; box-shadow: var(--focus-ring); transition: none; }
+.deck__hint { margin: var(--space-16) 0 0; font-size: 15px; line-height: 1.5; color: var(--slate); }
+.deck__nav { display: flex; gap: 12px; margin-top: var(--space-25); }
+.deck__btn { display: inline-flex; align-items: center; justify-content: center; width: 52px; height: 52px; padding: 0; border-radius: 999px; border: 1px solid rgba(11, 33, 63, .15); background: #fff; color: var(--navy); cursor: pointer; box-shadow: 0 6px 18px rgba(11, 33, 63, .1); transition: transform .2s ease, background-color .2s ease, color .2s ease; }
+.deck__btn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.deck__btn--next { background: var(--navy); color: #fff; border-color: var(--navy); }
+.deck__btn:hover { transform: translateY(-2px); }
+.deck:not(.is-ready) .deck__card:not(:first-child) { display: none; }
+@media (max-width: 860px) {
+  .deck { grid-template-columns: minmax(0, 1fr); gap: var(--space-30); }
+  .deck__stack { aspect-ratio: 4 / 5; margin-right: 18px; }
+  .deck__count span[data-deck-n] { font-size: 34px; }
+}
+
+/* ===== v9 · graella que es gira (Treballs) ===== */
+.flips { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2vw, 28px); margin: var(--space-30) 0 0; padding: 0; list-style: none; }
+.flip-card { min-width: 0; }
+.flip { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; perspective: 1400px; border-radius: 22px; font: inherit; text-align: left; }
+.flip__inner { position: relative; display: block; aspect-ratio: 4 / 3; transform-style: preserve-3d; transition: transform .7s cubic-bezier(.3, .7, .2, 1); }
+.flip[aria-pressed="true"] .flip__inner, .flip.is-hover .flip__inner { transform: rotateY(180deg); }
+.flip[aria-pressed="true"].is-hover .flip__inner { transform: rotateY(0deg); }
+.flip__face { position: absolute; inset: 0; display: block; border-radius: 22px; overflow: hidden; background: var(--navy); box-shadow: 0 16px 40px rgba(11, 33, 63, .16); -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+.flip__face--back { transform: rotateY(180deg); }
+.flip__img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.flip__turn { position: absolute; right: 14px; bottom: 14px; display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 999px; background: rgba(255, 255, 255, .9); color: var(--navy); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); box-shadow: 0 6px 16px rgba(11, 33, 63, .18); transition: transform .4s ease; }
+.flip__turn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.flip:hover .flip__turn { transform: rotate(-90deg); }
+.flip__proc { position: absolute; right: 14px; bottom: 14px; width: 34%; aspect-ratio: 4 / 3; border-radius: 14px; overflow: hidden; border: 3px solid #fff; box-shadow: 0 10px 24px rgba(0, 0, 0, .3); }
+.flip__proc-img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.flip__proc-tag { left: 6px; top: auto; bottom: 6px; padding: 3px 9px; font-size: 12px; background: rgba(255, 255, 255, .9); color: var(--navy); }
+.flip-card__title { margin: var(--space-16) 0 0; font-size: 18.67px; line-height: 1.3; font-weight: 700; color: var(--navy); overflow-wrap: break-word; min-width: 0; }
+@media (max-width: 959px) { .flips { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .flips { grid-template-columns: minmax(0, 1fr); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .deck__card, .deck__layer, .deck__img, .deck__btn, .deck__stage { transition: none; }
+  .deck__card.is-top { transform: none; }
+  .flip__inner { transition: none; transform: none !important; }
+  .flip__face--back { transform: none; opacity: 0; }
+  .flip[aria-pressed="true"] .flip__face--back, .flip.is-hover .flip__face--back { opacity: 1; }
+  .flip[aria-pressed="true"].is-hover .flip__face--back { opacity: 0; }
+}

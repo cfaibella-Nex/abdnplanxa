@@ -19,6 +19,40 @@
   "ui.quote": "Demana pressupost",
   "ui.stars5": "5,0 de 5 estrelles",
   "nav.inici": "Inici",
+  "deck.title": "Abans i després",
+  "deck.hint": "Mantén premuda la foto per veure el resultat",
+  "deck.hintHover": "Passa el ratolí per sobre de la foto per veure el resultat",
+  "deck.prev": "Reparació anterior",
+  "deck.next": "Reparació següent",
+  "deck.region": "Reparacions abans i després",
+  "deck.stages": "Etapes de la reparació",
+  "flip.sub": "Toca una foto per girar-la i veure el resultat",
+  "flip.subHover": "Passa el ratolí per sobre d’una foto per veure el resultat",
+  "flip.turn": "Gira la foto",
+  "stage.before": "Abans",
+  "stage.process": "Procés",
+  "stage.after": "Després",
+  "stage.result": "Resultat",
+  "case.portes": "Portes laterals",
+  "case.portes.0": "Portes laterals d’un SUV gris enfonsades i ratllades",
+  "case.portes.1": "Les dues portes amb aprest, abans de pintar",
+  "case.portes.2": "El SUV amb les portes reparades i pintades",
+  "case.davanter": "Para-xocs davanter",
+  "case.davanter.0": "Para-xocs davanter d’un SUV gris amb ratllades fondes",
+  "case.davanter.1": "El mateix para-xocs reparat i pintat",
+  "case.porta": "Porta lateral",
+  "case.porta.0": "Furgoneta verda amb la porta del conductor ratllada",
+  "case.porta.1": "La porta reparada i pintada del mateix color",
+  "case.classic": "Clàssic: capó i pintura",
+  "case.classic.0": "Capó d’un descapotable clàssic amb massilla, durant la preparació",
+  "case.classic.1": "El descapotable clàssic acabat, a la porta del taller",
+  "case.aleta": "Aleta i para-xocs posterior",
+  "case.aleta.0": "Aleta i para-xocs posterior abonyegats, abans de la reparació",
+  "case.aleta.1": "La mateixa zona amb massilla i aparell, durant la preparació",
+  "case.aleta.2": "Aleta i para-xocs reparats i pintats",
+  "case.vermell": "Aleta posterior",
+  "case.vermell.0": "Aleta posterior d’un cotxe vermell enfonsada, abans de la reparació",
+  "case.vermell.1": "El mateix cotxe vermell amb l’aleta reparada i pintada",
   "trust.label": "Garanties del taller",
   "trust.mapfre": "Taller col·laborador de MAPFRE",
   "trust.segurcaixa": "Taller col·laborador de SegurCaixa",
@@ -237,6 +271,40 @@
   "ui.quote": "Pide presupuesto",
   "ui.stars5": "5,0 de 5 estrellas",
   "nav.inici": "Inicio",
+  "deck.title": "Antes y después",
+  "deck.hint": "Mantén pulsada la foto para ver el resultado",
+  "deck.hintHover": "Pasa el ratón por encima de la foto para ver el resultado",
+  "deck.prev": "Reparación anterior",
+  "deck.next": "Reparación siguiente",
+  "deck.region": "Reparaciones antes y después",
+  "deck.stages": "Etapas de la reparación",
+  "flip.sub": "Toca una foto para girarla y ver el resultado",
+  "flip.subHover": "Pasa el ratón por encima de una foto para ver el resultado",
+  "flip.turn": "Gira la foto",
+  "stage.before": "Antes",
+  "stage.process": "Proceso",
+  "stage.after": "Después",
+  "stage.result": "Resultado",
+  "case.portes": "Puertas laterales",
+  "case.portes.0": "Puertas laterales de un SUV gris hundidas y rayadas",
+  "case.portes.1": "Las dos puertas con aparejo, antes de pintar",
+  "case.portes.2": "El SUV con las puertas reparadas y pintadas",
+  "case.davanter": "Paragolpes delantero",
+  "case.davanter.0": "Paragolpes delantero de un SUV gris con rayas profundas",
+  "case.davanter.1": "El mismo paragolpes reparado y pintado",
+  "case.porta": "Puerta lateral",
+  "case.porta.0": "Furgoneta verde con la puerta del conductor rayada",
+  "case.porta.1": "La puerta reparada y pintada del mismo color",
+  "case.classic": "Clásico: capó y pintura",
+  "case.classic.0": "Capó de un descapotable clásico con masilla, durante la preparación",
+  "case.classic.1": "El descapotable clásico terminado, en la puerta del taller",
+  "case.aleta": "Aleta y paragolpes trasero",
+  "case.aleta.0": "Aleta y paragolpes trasero abollados, antes de la reparación",
+  "case.aleta.1": "La misma zona con masilla y aparejo, durante la preparación",
+  "case.aleta.2": "Aleta y paragolpes reparados y pintados",
+  "case.vermell": "Aleta trasera",
+  "case.vermell.0": "Aleta trasera de un coche rojo hundida, antes de la reparación",
+  "case.vermell.1": "El mismo coche rojo con la aleta reparada y pintada",
   "trust.label": "Garantías del taller",
   "trust.mapfre": "Taller colaborador de MAPFRE",
   "trust.segurcaixa": "Taller colaborador de SegurCaixa",
@@ -495,6 +563,7 @@
       b.addEventListener('click', function () {
         var next = b.getAttribute('data-lang');
         store(KEY_LANG, next);
+        setTimeout(function () { document.dispatchEvent(new CustomEvent('abdn:lang')); }, 0);
         apply(next);
       });
     });
@@ -584,6 +653,128 @@
         grid.classList.add('is-lit');
       });
       grid.addEventListener('pointerleave', function () { grid.classList.remove('is-lit'); });
+    });
+  }
+
+
+  /* ---------- Baralla abans/després (inici) ---------- */
+  var CAN_HOVER = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  var REDUCE = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function initDeck() {
+    qsa('[data-deck]').forEach(function (root) {
+      if (!root.classList.contains('deck')) { return; }
+      var stack = root.querySelector('.deck__stack');
+      var cards = qsa('.deck__card', stack);
+      var order = cards.map(function (_c, i) { return i; });
+      var titleEl = root.querySelector('[data-deck-title]');
+      var nEl = root.querySelector('[data-deck-n]');
+      var stagesEl = root.querySelector('[data-deck-stages]');
+      var hint = root.querySelector('[data-deck-hint]');
+      var busy = false, stage = 0, peek = false;
+      if (hint && CAN_HOVER) { hint.setAttribute('data-i18n', 'deck.hintHover'); hint.textContent = t('deck.hintHover'); }
+      root.classList.add('is-ready');
+
+      function top() { return cards[order[0]]; }
+      function stagesOf(c) { return c.getAttribute('data-stages').split(','); }
+      function paint() {
+        var c = top(), st = stagesOf(c), show = peek ? st.length - 1 : stage;
+        qsa('.deck__layer', c).forEach(function (l, i) {
+          var on = i === show;
+          l.classList.toggle('is-on', on);
+          var img = l.querySelector('img'); if (img) { img.setAttribute('aria-hidden', on ? 'false' : 'true'); }
+        });
+        qsa('.deck__stage', stagesEl).forEach(function (b, i) { b.setAttribute('aria-pressed', i === show ? 'true' : 'false'); });
+      }
+      function layout() {
+        order.forEach(function (ci, pos) {
+          var c = cards[ci];
+          c.style.setProperty('--pos', pos);
+          c.classList.toggle('is-top', pos === 0);
+          c.classList.toggle('is-far', pos >= 4);
+          if (pos === 0) { c.removeAttribute('aria-hidden'); } else { c.setAttribute('aria-hidden', 'true'); }
+        });
+        var c = top(), id = c.getAttribute('data-case');
+        titleEl.setAttribute('data-i18n', 'case.' + id); titleEl.textContent = t('case.' + id);
+        nEl.textContent = String(order[0] + 1);
+        stagesEl.innerHTML = '';
+        stagesOf(c).forEach(function (st, i) {
+          var b = document.createElement('button');
+          b.type = 'button'; b.className = 'deck__stage';
+          b.setAttribute('data-i18n', 'stage.' + st); b.textContent = t('stage.' + st);
+          b.addEventListener('click', function () { stage = i; peek = false; paint(); });
+          stagesEl.appendChild(b);
+        });
+        stage = 0; peek = false; paint();
+      }
+      function go(dir) {
+        if (busy) { return; }
+        var c = top();
+        if (REDUCE) { rotate(dir); layout(); return; }
+        busy = true;
+        if (dir > 0) {
+          c.style.setProperty('--fling', (c._dx && c._dx < 0) ? '-1' : '1');
+          c.classList.add('is-leaving');
+          setTimeout(function () { c.classList.remove('is-leaving'); c.classList.add('is-snap'); rotate(1); layout(); requestAnimationFrame(function () { requestAnimationFrame(function () { c.classList.remove('is-snap'); busy = false; }); }); }, 380);
+        } else {
+          var last = cards[order[order.length - 1]];
+          last.classList.add('is-snap', 'is-entering');
+          rotate(-1); layout();
+          requestAnimationFrame(function () { requestAnimationFrame(function () { last.classList.remove('is-snap'); last.classList.remove('is-entering'); setTimeout(function () { busy = false; }, 380); }); });
+        }
+        c._dx = 0;
+      }
+      function rotate(dir) { if (dir > 0) { order.push(order.shift()); } else { order.unshift(order.pop()); } }
+
+      root.querySelector('[data-deck="next"]').addEventListener('click', function () { go(1); });
+      root.querySelector('[data-deck="prev"]').addEventListener('click', function () { go(-1); });
+      root.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+      });
+
+      /* veure el resultat: ratolí a sobre o dit premut; arrossegar per passar */
+      var sx = 0, sy = 0, dragging = false, pid = null;
+      stack.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') { peek = true; paint(); } });
+      stack.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse') { peek = false; paint(); } });
+      stack.addEventListener('pointerdown', function (e) {
+        if (busy || !e.target.closest('.deck__card.is-top')) { return; }
+        pid = e.pointerId; sx = e.clientX; sy = e.clientY; dragging = false; peek = true; paint();
+        try { stack.setPointerCapture(pid); } catch (err) {}
+      });
+      stack.addEventListener('pointermove', function (e) {
+        if (e.pointerId !== pid) { return; }
+        var dx = e.clientX - sx, dy = e.clientY - sy;
+        if (!dragging && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) { dragging = true; top().classList.add('is-drag'); }
+        if (dragging) { var c = top(); c._dx = dx; c.style.setProperty('--dx', dx + 'px'); c.style.setProperty('--rot', (dx / 22) + 'deg'); }
+      });
+      function end(e) {
+        if (e.pointerId !== pid) { return; }
+        var c = top(); pid = null;
+        if (e.pointerType !== 'mouse') { peek = false; }
+        c.classList.remove('is-drag');
+        if (dragging && Math.abs(c._dx || 0) > 90) { go(1); }
+        c.style.setProperty('--dx', '0px'); c.style.setProperty('--rot', '0deg'); dragging = false; paint();
+      }
+      stack.addEventListener('pointerup', end);
+      stack.addEventListener('pointercancel', end);
+      layout();
+      document.addEventListener('abdn:lang', layout);
+    });
+  }
+
+  /* ---------- Graella que es gira (Treballs) ---------- */
+  function initFlips() {
+    var sub = document.querySelector('[data-flip-sub]');
+    if (sub && CAN_HOVER) { sub.setAttribute('data-i18n', 'flip.subHover'); sub.textContent = t('flip.subHover'); }
+    qsa('[data-flips] .flip').forEach(function (b) {
+      var id = b.getAttribute('data-flip-label');
+      function label() { b.setAttribute('aria-label', t('case.' + id) + ': ' + t('flip.turn').toLowerCase()); }
+      label(); document.addEventListener('abdn:lang', label);
+      b.addEventListener('click', function () { b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true'); });
+      if (CAN_HOVER) {
+        b.addEventListener('mouseenter', function () { b.classList.add('is-hover'); });
+        b.addEventListener('mouseleave', function () { b.classList.remove('is-hover'); });
+      }
     });
   }
 
@@ -853,6 +1044,8 @@
     initYear();
     initForm();
     initBeforeAfter();
+    initDeck();
+    initFlips();
     initGuarantees();
     initHeaderScroll();
     initReveal();
