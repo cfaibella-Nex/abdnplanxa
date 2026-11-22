@@ -761,3 +761,13 @@ main:focus { outline: none; }
   .flip[aria-pressed="true"] .flip__face--back, .flip.is-hover .flip__face--back { opacity: 1; }
   .flip[aria-pressed="true"].is-hover .flip__face--back { opacity: 0; }
 }
+
+/* ===== v10 · baralla automàtica ===== */
+.deck__btn--toggle svg { width: 18px; height: 18px; }
+.deck__btn--toggle .deck__ico-play { fill: currentColor; stroke: none; display: none; }
+.deck__btn--toggle .deck__ico-pause { stroke-width: 2.6; }
+.deck__btn--toggle[aria-pressed="true"] .deck__ico-play { display: block; }
+.deck__btn--toggle[aria-pressed="true"] .deck__ico-pause { display: none; }
+.deck__progress { display: block; width: min(220px, 60%); height: 4px; margin-top: var(--space-16); border-radius: 999px; background: rgba(11, 33, 63, .12); overflow: hidden; }
+.deck__progress-bar { display: block; width: 100%; height: 100%; border-radius: inherit; background: var(--amber); transform: scaleX(0); transform-origin: left center; }
+@media (prefers-reduced-motion: reduce) { .deck__progress { display: none; } }

@@ -19,6 +19,8 @@
   "ui.quote": "Demana pressupost",
   "ui.stars5": "5,0 de 5 estrelles",
   "nav.inici": "Inici",
+  "deck.pause": "Atura la reproducció",
+  "deck.play": "Reprèn la reproducció",
   "deck.title": "Abans i després",
   "deck.hint": "Mantén premuda la foto per veure el resultat",
   "deck.hintHover": "Passa el ratolí per sobre de la foto per veure el resultat",
@@ -271,6 +273,8 @@
   "ui.quote": "Pide presupuesto",
   "ui.stars5": "5,0 de 5 estrellas",
   "nav.inici": "Inicio",
+  "deck.pause": "Detener la reproducción",
+  "deck.play": "Reanudar la reproducción",
   "deck.title": "Antes y después",
   "deck.hint": "Mantén pulsada la foto para ver el resultado",
   "deck.hintHover": "Pasa el ratón por encima de la foto para ver el resultado",
@@ -759,6 +763,54 @@
       stack.addEventListener('pointercancel', end);
       layout();
       document.addEventListener('abdn:lang', layout);
+
+      /* reproducció automàtica */
+      var toggle = root.querySelector('[data-deck="toggle"]');
+      var bar = root.querySelector('[data-deck-bar]');
+      var timer = null, userPaused = REDUCE, hover = false, visible = false, touchT = null;
+      var STEP = 2000, AFTER = 2600;
+      function running() { return !userPaused && !hover && visible && !document.hidden && !root.closest('[hidden]'); }
+      function setBar(ms) {
+        if (!bar) { return; }
+        bar.style.transition = 'none'; bar.style.transform = 'scaleX(0)';
+        if (ms) { void bar.offsetWidth; bar.style.transition = 'transform ' + ms + 'ms linear'; bar.style.transform = 'scaleX(1)'; }
+      }
+      function step() {
+        timer = null;
+        if (!running()) { setBar(0); return; }
+        var st = stagesOf(top());
+        if (stage < st.length - 1) { stage++; peek = false; paint(); var wait = stage === st.length - 1 ? AFTER : STEP; timer = setTimeout(step, wait); }
+        else { go(1); timer = setTimeout(step, STEP + 400); setBar(STEP * (stagesOf(cards[order[0]]).length - 1) + AFTER + 400); }
+      }
+      function schedule() {
+        clearTimeout(timer); timer = null;
+        root.classList.toggle('is-playing', running());
+        if (running()) {
+          var st = stagesOf(top()), rest = STEP * (st.length - 1 - stage) + AFTER;
+          setBar(rest); timer = setTimeout(step, STEP);
+        } else { setBar(0); }
+      }
+      function setPaused(p) {
+        userPaused = p;
+        toggle.setAttribute('aria-pressed', p ? 'true' : 'false');
+        toggle.setAttribute('data-i18n-attr', 'aria-label:' + (p ? 'deck.play' : 'deck.pause'));
+        toggle.setAttribute('aria-label', t(p ? 'deck.play' : 'deck.pause'));
+        schedule();
+      }
+      toggle.addEventListener('click', function () { setPaused(!userPaused); });
+      root.addEventListener('mouseenter', function () { hover = true; schedule(); });
+      root.addEventListener('mouseleave', function () { hover = false; schedule(); });
+      root.addEventListener('focusin', function (e) { if (e.target !== toggle) { hover = true; schedule(); } });
+      root.addEventListener('focusout', function (e) { if (!root.contains(e.relatedTarget)) { hover = false; schedule(); } });
+      stack.addEventListener('touchstart', function () { clearTimeout(touchT); hover = true; schedule(); }, { passive: true });
+      stack.addEventListener('touchend', function () { clearTimeout(touchT); touchT = setTimeout(function () { hover = false; schedule(); }, 5000); }, { passive: true });
+      qsa('[data-deck="prev"], [data-deck="next"]', root).forEach(function (b) { b.addEventListener('click', function () { setTimeout(schedule, 50); }); });
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (es) { visible = es[0].isIntersecting; schedule(); }, { threshold: 0.45 }).observe(root);
+      } else { visible = true; }
+      document.addEventListener('visibilitychange', schedule);
+      window.addEventListener('hashchange', function () { setTimeout(schedule, 80); });
+      if (REDUCE) { setPaused(true); } else { schedule(); }
     });
   }
 
